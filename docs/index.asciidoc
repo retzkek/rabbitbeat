@@ -1,0 +1,5 @@
+= Rabbitbeat Docs
+
+Welcome to the Rabbitbeat documentation.
+
+
