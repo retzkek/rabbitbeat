@@ -3,8 +3,23 @@
 ############################# Rabbitbeat ######################################
 
 rabbitbeat:
-  # Defines how often an event is sent to the output
-  period: 1s
+  # AMQP broker settings
+  user: guest
+  password: guest
+  host: localhost
+  port: 5672
+  vhost: 
+  retry: 10s 
+  # AMQP exchange settings
+  exchange: amqp.fanout
+  exchange_type: fanout
+  auto_delete_exchange: false
+  # AMQP queue settings
+  queue: rabbitbeat
+  routing_key: #
+  exclusive: false
+  durable: true
+  auto_delete_queue: false
 
 #================================ General =====================================
 
