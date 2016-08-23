@@ -4,22 +4,28 @@
 
 rabbitbeat:
   # AMQP broker settings
-  user: guest
-  password: guest
   host: localhost
   port: 5672
   vhost: 
+  user: guest
+  password: guest
   retry: 10s 
+
   # AMQP exchange settings
-  exchange: amqp.fanout
-  exchange_type: fanout
-  auto_delete_exchange: false
+  exchange.name: amqp.fanout
+  exchange.type: fanout
+  exchange.durable: true
+  exchange.auto_delete: false
+
   # AMQP queue settings
-  queue: rabbitbeat
-  routing_key: #
+  queue.name: rabbitbeat
+  queue.routing_key: #
+  queue.exclusive: false
+  queue.durable: true
+  queue.auto_delete: false
+
+  # limit other consumers from reading from our queue?
   exclusive: false
-  durable: true
-  auto_delete_queue: false
 
 #================================ General =====================================
 

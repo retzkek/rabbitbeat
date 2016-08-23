@@ -8,39 +8,55 @@ import (
 )
 
 type Config struct {
-	User               string        `config:"user"`
-	Password           string        `config:"password"`
-	Host               string        `config:"host"`
-	VHost              string        `config:"vhost"`
-	Port               string        `config:"port"`
-	URITemplate        string        `config:"uri_template"`
-	Retry              time.Duration `config:"retry" validate:"nonzero,min=0s"`
-	Exchange           string        `config:"exchange"`
-	ExchangeType       string        `config:"exchange_type"`
-	Queue              string        `config:"queue"`
-	RoutingKey         string        `config:"routing_key"`
-	Exclusive          bool          `config:"exclusive"`
-	Durable            bool          `config:"durable"`
-	AutoDeleteExchange bool          `config:"auto_delete_exchange"`
-	AutoDeleteQueue    bool          `config:"auto_delete_queue"`
-	ConsumerTag        string        `config:"consumer_tag"`
+	Host        string         `config:"host"`
+	Port        string         `config:"port"`
+	VHost       string         `config:"vhost"`
+	User        string         `config:"user"`
+	Password    string         `config:"password"`
+	URITemplate string         `config:"uri"`
+	Retry       time.Duration  `config:"retry" validate:"nonzero,min=0s"`
+	Exchange    ExchangeConfig `config:"exchange"`
+	Queue       QueueConfig    `config:"queue"`
+	ConsumerTag string         `config:"consumer_tag"`
+	Exclusive   bool           `config:"exclusive"`
+}
+
+type ExchangeConfig struct {
+	Name       string `config:"name"`
+	Type       string `config:"type"`
+	Durable    bool   `config:"durable"`
+	AutoDelete bool   `config:"auto_delete"`
+}
+
+type QueueConfig struct {
+	Name       string `config:"name"`
+	RoutingKey string `config:"routing_key"`
+	Exclusive  bool   `config:"exclusive"`
+	Durable    bool   `config:"durable"`
+	AutoDelete bool   `config:"auto_delete"`
 }
 
 var DefaultConfig = Config{
-	User:               "guest",
-	Password:           "guest",
-	Host:               "localhost",
-	VHost:              "",
-	Port:               "5672",
-	URITemplate:        "amqp://{{.User}}:{{.Password}}@{{.Host}}:{{.Port}}/{{.VHost}}",
-	Retry:              10 * time.Second,
-	Exchange:           "amqp.fanout",
-	ExchangeType:       "fanout",
-	Queue:              "rabbitbeat",
-	RoutingKey:         "#",
-	Exclusive:          false,
-	Durable:            true,
-	AutoDeleteExchange: false,
-	AutoDeleteQueue:    false,
-	ConsumerTag:        "",
+	Host:        "localhost",
+	Port:        "5672",
+	VHost:       "",
+	User:        "guest",
+	Password:    "guest",
+	URITemplate: "amqp://{{.User}}:{{.Password}}@{{.Host}}:{{.Port}}/{{.VHost}}",
+	Retry:       10 * time.Second,
+	Exchange: ExchangeConfig{
+		Name:       "amqp.fanout",
+		Type:       "fanout",
+		Durable:    true,
+		AutoDelete: false,
+	},
+	Queue: QueueConfig{
+		Name:       "rabbitbeat",
+		RoutingKey: "#",
+		Exclusive:  false,
+		Durable:    true,
+		AutoDelete: false,
+	},
+	ConsumerTag: "",
+	Exclusive:   false,
 }

@@ -151,10 +151,10 @@ func (bt *Rabbitbeat) setupConsumer() error {
 
 	// setup exchange and queue
 	if err := bt.channel.ExchangeDeclare(
-		bt.config.Exchange,
-		bt.config.ExchangeType,
-		bt.config.Durable,
-		bt.config.AutoDeleteExchange,
+		bt.config.Exchange.Name,
+		bt.config.Exchange.Type,
+		bt.config.Exchange.Durable,
+		bt.config.Exchange.AutoDelete,
 		false, //internal
 		false, //noWait
 		nil,   //args
@@ -162,19 +162,19 @@ func (bt *Rabbitbeat) setupConsumer() error {
 		return fmt.Errorf("error declaring exchange (%s)", err)
 	}
 	if _, err := bt.channel.QueueDeclare(
-		bt.config.Queue,
-		bt.config.Durable,
-		bt.config.AutoDeleteQueue,
-		bt.config.Exclusive,
+		bt.config.Queue.Name,
+		bt.config.Queue.Durable,
+		bt.config.Queue.AutoDelete,
+		bt.config.Queue.Exclusive,
 		false, //noWait
 		nil,   //args
 	); err != nil {
 		return fmt.Errorf("error declaring queue (%s)", err)
 	}
 	if err := bt.channel.QueueBind(
-		bt.config.Queue,
-		bt.config.RoutingKey,
-		bt.config.Exchange,
+		bt.config.Queue.Name,
+		bt.config.Queue.RoutingKey,
+		bt.config.Exchange.Name,
 		false, //noWait
 		nil,   //args
 	); err != nil {
@@ -183,7 +183,7 @@ func (bt *Rabbitbeat) setupConsumer() error {
 
 	// start consumer
 	if bt.inbox, err = bt.channel.Consume(
-		bt.config.Queue,
+		bt.config.Queue.Name,
 		bt.config.ConsumerTag,
 		false, //autoAck
 		bt.config.Exclusive,
