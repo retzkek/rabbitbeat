@@ -63,6 +63,7 @@ func (bt *Rabbitbeat) Run(b *beat.Beat) error {
 		case c := <-bt.connClosing:
 			logp.Warn("AMQP connection closed (%s: %s)", c.Code, c.Reason)
 			bt.setupAMQP()
+			bt.setupConsumer()
 		case c := <-bt.connBlocking:
 			if c.Active {
 				logp.Warn("AMQP connection blocked (%s)", c.Reason)
