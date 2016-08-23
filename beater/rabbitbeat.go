@@ -17,10 +17,6 @@ import (
 	"github.com/retzkek/rabbitbeat/config"
 )
 
-const (
-	RetryFallback = 10 * time.Second
-)
-
 type Rabbitbeat struct {
 	done         chan struct{}
 	config       config.Config
@@ -114,17 +110,6 @@ func (bt *Rabbitbeat) amqpURI(scrubbed bool) string {
 	return b.String()
 }
 
-// retryDuration parses the Retry config setting duration. In case of error the
-// RetryFallback duration is returned.
-func (bt *Rabbitbeat) retryDuration() time.Duration {
-	retry, err := time.ParseDuration(bt.config.Retry)
-	if err != nil {
-		logp.Warn("error parsing Retry duration, using \"%s\" (%s)", RetryFallback.String(), err)
-		return RetryFallback
-	}
-	return retry
-}
-
 // setupAMQP initializes the connection to the AMQP broker
 func (bt *Rabbitbeat) setupAMQP() error {
 	if bt.connection != nil {
@@ -138,8 +123,8 @@ func (bt *Rabbitbeat) setupAMQP() error {
 		return err
 	}
 	for err = connect(); err != nil; err = connect() {
-		logp.Err("error connecting to AMQP broker. retry in %s (%s)", bt.config.Retry, err)
-		time.Sleep(bt.retryDuration())
+		logp.Err("error connecting to AMQP broker. retry in %s (%s)", bt.config.Retry.String(), err)
+		time.Sleep(bt.config.Retry)
 	}
 
 	logp.Info("connection established to AMQP broker")
