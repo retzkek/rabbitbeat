@@ -79,14 +79,28 @@ func (bt *Rabbitbeat) Run(b *beat.Beat) error {
 				"@timestamp": common.Time(time.Now()),
 				"type":       b.Name,
 			}
-			if err := json.Unmarshal(r.Body, &event); err != nil {
-				r.Nack(false, false)
-				logp.Err("error unmarshalling message (%s)", err)
-			} else {
-				bt.client.PublishEvent(event)
-				r.Ack(false)
-				logp.Info("Event sent")
+
+			if bt.config.Target != "" {
+				event[bt.config.Target] = string(r.Body)
 			}
+
+			switch {
+			case bt.config.Codec == "plain":
+				break
+			case bt.config.Codec == "json":
+				// unmarshal the JSON directly into the event
+				if err := json.Unmarshal(r.Body, &event); err != nil {
+					r.Nack(false, false)
+					logp.Err("error unmarshalling message (%s)", err)
+					continue
+				}
+			default:
+				logp.Err("unknown codec %s, using \"plain\"", bt.config.Codec)
+			}
+
+			bt.client.PublishEvent(event)
+			r.Ack(false)
+			logp.Info("Event sent")
 		}
 	}
 }

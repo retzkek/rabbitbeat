@@ -8,6 +8,9 @@ import (
 )
 
 type Config struct {
+	Codec  string `config:"codec"`
+	Target string `config:"target"`
+
 	Host        string         `config:"host"`
 	Port        string         `config:"port"`
 	VHost       string         `config:"vhost"`
@@ -37,6 +40,8 @@ type QueueConfig struct {
 }
 
 var DefaultConfig = Config{
+	Codec:       "json",
+	Target:      "msg",
 	Host:        "localhost",
 	Port:        "5672",
 	VHost:       "",

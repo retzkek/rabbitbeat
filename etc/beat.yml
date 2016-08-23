@@ -3,6 +3,12 @@
 ############################# Rabbitbeat ######################################
 
 rabbitbeat:
+  # codec to process message
+  # plain, json
+  codec: json
+  # field to put the raw message into (empty to omit)
+  target: msg
+
   # AMQP broker settings
   host: localhost
   port: 5672
