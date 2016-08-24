@@ -124,7 +124,7 @@ ci:
 prepare-tests:
 	mkdir -p ${COVERAGE_DIR}
 	# gotestcover is needed to fetch coverage for multiple packages
-	go install github.com/elastic/beats/vendor/github.com/pierrre/gotestcover
+	go install $(ES_BEATS)/vendor/github.com/pierrre/gotestcover
 
 # Runs the unit tests with coverage
 # Race is not enabled for unit tests because tests run much slower.
